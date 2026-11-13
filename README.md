@@ -1,8 +1,8 @@
-# DP600 XML to DM700 SRD Converter
+# TDS/IDS to SRD Converter
 
-A small template application for converting DP600-style `TextData` and
-`ImageData` XML files into DM700-style `.srd` screen XML files. Upload one or
-more matching pairs in the browser UI; each pair produces a separate screen.
+A small template application for converting `.TDS` text catalogs and `.IDS`
+image catalogs into the `ScreenRepository` XML format used by `.SRD` files.
+Upload one matching TDS/IDS pair and the BMP assets referenced in the IDS.
 
 ## Run on Windows
 
@@ -18,24 +18,25 @@ python -m streamlit run converter_app.py
 
 ## Input and output
 
-- Pair files by suffix: `textdata1.xml` with `imgdata1.xml`,
-  `textdata2.xml` with `imgdata2.xml`, and so on.
-- A single pair with other filenames is accepted if the XML roots are
-  `TextData` and `ImageData`.
-- Text elements need `id`, `x`, `y`, `size`, and `color` attributes and text
-  content. Image elements need `id`, `x`, `y`, and `file` attributes.
-- The output root is `<Screen>`. Text and image positions are scaled from the
-  source resolution to the target resolution; font size, target font, text box
-  size, image size, background, and both resolutions can be changed in the
-  sidebar.
-- One converted screen downloads as `.srd`; multiple screens download as a ZIP.
-  Optionally upload image assets too; they will be included in the ZIP next to
-  the screen file(s). The output image references use just the asset filename.
+- The `.TDS` root must be `TextDataSource`, and the `.IDS` root must be
+  `ImageDataSource`. The converter preserves resource IDs, descriptions,
+  folders, language strings, and image metadata supported by the SRD example.
+- Integer format specifiers `%d`, `%i`, `%u`, `%x`, and `%X` are rewritten as
+  SRD placeholders with matching `Inputs/FC` metadata. Other format specifiers
+  are reported as unsupported rather than silently altered.
+- Upload each BMP named by an IDS `<SourceFileName>` entry. BMP dimensions are
+  needed to create the corresponding SRD image resource; the app includes the
+  BMPs alongside the SRD in a ZIP download.
+- Output is a `ScreenRepository` with a `ScreenLibrary`, language definition,
+  and empty screen/application-definition repositories. TDS/IDS contain no
+  positions or screen layouts, so the converter does not invent them. Add
+  layouts in the target application after importing the resource library.
+- The generated format version and element mappings are based on the supplied
+  `SCREENREPO.SRD` sample. Validate the output in the target software before
+  using it in production.
 
-The default sizes and mappings are starting values based on the provided
-illustration, not a vendor-validated SRD specification. Adjust the settings or
-the converter mapping for your actual device schema. The generated XML is
-intended as a template and should be tested on a copy of the target device files.
+The earlier simple XML-to-screen demo remains available as a library function
+for tests, but the browser UI is focused on the real TDS/IDS resource catalogs.
 
 ## Test
 
