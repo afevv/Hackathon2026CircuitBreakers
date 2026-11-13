@@ -1,61 +1,44 @@
-# Competitor Intelligence Assistant: MVVM template (Python)
+# DP600 XML to DM700 SRD Converter
 
-A skeleton for the Danfoss hackathon case. The architecture is in place and the
-domain logic is deliberately simple, so you can swap in the real extraction, RAG
-and matching work. All sample data in `data/sample_products.json` is **made-up
-placeholder data**, not real products.
+A small template application for converting DP600-style `TextData` and
+`ImageData` XML files into DM700-style `.srd` screen XML files. Upload one or
+more matching pairs in the browser UI; each pair produces a separate screen.
 
-## MVVM layout
+## Run on Windows
 
-```
-Model       ci_assistant/models/       Plain dataclasses. No I/O, no UI. (Product, SourceRef, ComparisonResult...)
-Services    ci_assistant/services/     Data + logic behind Protocol interfaces (repository, retriever,
-                                       extractor, matcher, comparison engine, LLM client)
-ViewModel   ci_assistant/viewmodels/   UI state + commands. Observable. Knows nothing about Streamlit/CLI.
-View        ci_assistant/views/        Thin renderers. Streamlit and CLI views share the same ViewModels.
-Wiring      ci_assistant/container.py  Service composition root (dependency injection)
-App         app.py                     Keeps Streamlit ViewModels in session state and passes them to the View.
-```
+Double-click `run_converter.bat`. On first use, it creates a local `.venv` and
+installs Streamlit. The converter opens in your browser.
 
-Dependency rule: View -> ViewModel -> Services/Models. Never the other way round.
-That is what lets you test every ViewModel without a UI and swap the UI later.
-The Streamlit entry point wires the ViewModels; the Streamlit View only renders them
-and forwards user actions.
+To start it manually:
 
-## Run
-
-```bash
-pip install -r requirements.txt
-python -m ci_assistant                    # CLI demo on sample data
-python -m ci_assistant --target DANFOSS-DEMO-B
-streamlit run app.py                      # Streamlit UI
-pytest                                    # tests
+```powershell
+python -m pip install -r converter-requirements.txt
+python -m streamlit run converter_app.py
 ```
 
-On Windows, double-click `run_app.bat` to start the Streamlit UI in your browser.
-On its first run, it creates a project-local `.venv` and installs the dependencies.
+## Input and output
 
-Set `CI_LLM_PROVIDER=anthropic` and `ANTHROPIC_API_KEY=...` (see `.env.example`) to use a real LLM.
-The default `stub` provider needs no key. If your hackathon provides an approved
-enterprise model, implement `LLMClient` for it in `services/llm_client.py`.
+- Pair files by suffix: `textdata1.xml` with `imgdata1.xml`,
+  `textdata2.xml` with `imgdata2.xml`, and so on.
+- A single pair with other filenames is accepted if the XML roots are
+  `TextData` and `ImageData`.
+- Text elements need `id`, `x`, `y`, `size`, and `color` attributes and text
+  content. Image elements need `id`, `x`, `y`, and `file` attributes.
+- The output root is `<Screen>`. Text and image positions are scaled from the
+  source resolution to the target resolution; font size, target font, text box
+  size, image size, background, and both resolutions can be changed in the
+  sidebar.
+- One converted screen downloads as `.srd`; multiple screens download as a ZIP.
+  Optionally upload image assets too; they will be included in the ZIP next to
+  the screen file(s). The output image references use just the asset filename.
 
-## Where to put your hackathon work
+The default sizes and mappings are starting values based on the provided
+illustration, not a vendor-validated SRD specification. Adjust the settings or
+the converter mapping for your actual device schema. The generated XML is
+intended as a template and should be tested on a copy of the target device files.
 
-| Case requirement                         | File to extend                                   |
-|------------------------------------------|--------------------------------------------------|
-| Retrieve public/Danfoss sources (RAG)    | `services/retrieval_service.py`                  |
-| Extract attributes from PDFs/websites    | `services/extraction_service.py`                 |
-| Common attribute format / units          | `models/attribute_schema.py`, `models/units.py`  |
-| Cross-reference / matching               | `services/matching_service.py`                   |
-| Comparison, differences, uncertainties   | `services/comparison_service.py`                 |
-| Natural-language Q&A with citations      | `viewmodels/chat_viewmodel.py`                   |
-| Battlecard / shortlist output            | new ViewModel + View                             |
-| System-level comparison (stretch)        | new model `System(components=[Product])` + engine|
-| Commercial insight (stretch)             | add price/availability to the schema + a service |
+## Test
 
-## Known TODOs in the template
-
-- Conflict detection (same attribute, different values across sources) is stubbed in `comparison_service.py`.
-- `RegexAttributeExtractor` is a toy; replace or complement it with LLM-based structured extraction.
-- `KeywordRetriever` is plain keyword scoring; replace with embeddings/vector search.
-- The Streamlit view was written without being run in the build environment (Streamlit wasn't installed there), so expect to fix small things on first launch.
+```powershell
+python -m unittest discover -s tests
+```
