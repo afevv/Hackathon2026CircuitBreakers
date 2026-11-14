@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project A.S.S.E.R.T.</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --panel: #121b2b;
+      --panel-alt: #172335;
+      --edge: #2a3f5f;
+      --text: #edf5ff;
+      --muted: #9eb4d1;
+      --green: #3ddc97;
+      --amber: #ffbf47;
+      --red: #ff5f5f;
+      --blue: #5eb5ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Segoe UI, sans-serif; background: linear-gradient(180deg,#0c1320,#0a0f1b); color: var(--text);
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .title-wrap h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
+    .sub { color: var(--muted); }
+    .controls, .stats, .tabs, .panels { display: grid; gap: 16px; }
+    .controls { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 20px; }
+    button, select { border: 1px solid var(--edge); background: var(--panel-alt); color: var(--text); border-radius: 10px; padding: 12px 16px; cursor: pointer; }
+    button.primary { background: linear-gradient(135deg, #1f6fff, #3aa0ff); }
+    button.warn { background: linear-gradient(135deg, #8d4d00, #c27300); }
+    button.danger { background: linear-gradient(135deg, #7c1d1d, #c93232); }
+    .panel {
+      background: rgba(18,27,43,0.95); border: 1px solid var(--edge); border-radius: 16px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+    }
+    .stats { grid-template-columns: repeat(4, minmax(140px, 1fr)); margin-bottom: 20px; }
+    .metric { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 14px; }
+    .metric .label { font-size: 12px; color: var(--muted); text-transform: uppercase; }
+    .metric .value { font-size: 28px; font-weight: 700; margin-top: 8px; }
+    .bar { height: 10px; border-radius: 999px; background: #1d2a3d; overflow: hidden; margin-top: 8px; }
+    .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); }
+    .main-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; }
+    .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 20px 0; }
+    .resource-list { display: grid; gap: 10px; }
+    .resource-card { background: #0b1220; border: 1px solid var(--edge); border-radius: 10px; padding: 12px; }
+    .resource-card h4 { margin: 0 0 8px; color: var(--blue); }
+    .resource-card p { margin: 5px 0; overflow-wrap: anywhere; }
+    .resource-card .muted { color: var(--muted); font-size: 13px; }
+    .resource-arrow { color: var(--green); font-weight: 700; }
+    .trace { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .trace li { border-left: 3px solid var(--blue); background: rgba(94,181,255,0.08); padding: 10px 12px; border-radius: 6px; }
+    .canvas-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    canvas { width: 100%; border-radius: 12px; border: 1px solid var(--edge); background: #0a172a; }
+    .image-preview-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; margin: 12px 0; }
+    .image-preview-controls label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; }
+    .image-preview-controls select, .image-preview-controls input { width: 100%; }
+    .ratio-controls { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 10px; align-items: end; margin: 12px 0; }
+    .ratio-controls label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; }
+    .ratio-help { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 13px; }
+    .tabs { grid-template-columns: repeat(3, 1fr); margin-top: 18px; }
+    .tab-button { background: var(--panel); }
+    .tab-button.active { border-color: var(--blue); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    pre { background: #0b1220; border-radius: 12px; padding: 16px; border: 1px solid var(--edge); overflow: auto; max-height: 420px; }
+    .roi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    input[type=range] { width: 100%; }
+    .status { margin-top: 10px; color: var(--muted); }
+    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(61,220,151,0.12); color: var(--green); border: 1px solid rgba(61,220,151,0.35); }
+    .pill.warn { color: var(--amber); background: rgba(255,191,71,0.12); border-color: rgba(255,191,71,0.35); }
+    .pill.red { color: var(--red); background: rgba(255,95,95,0.12); border-color: rgba(255,95,95,0.35); }
+    .switch input:checked + span { background: #2d7cf6; }
+    .switch input:checked + span span { transform: translateX(24px); }
+    @media (max-width: 760px) {
+      .io-grid, .main-grid { grid-template-columns: 1fr; }
+      .image-preview-controls { grid-template-columns: 1fr; }
+      .ratio-controls { grid-template-columns: 1fr 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title-wrap">
+        <div class="sub">Project A.S.S.E.R.T.</div>
+        <h1>Automated Safety Scoring & Engineered Rule Translation</h1>
+      </div>
+      <div class="pill" id="tierPill">Ready</div>
+    </div>
+
+    <div class="controls">
+      <button class="primary" id="runDemo">Run Migration Demo</button>
+      <button class="warn" id="runHazard">Simulate Safety Hazard</button>
+      <button class="danger" id="resetDict">Reset Dynamic Dictionary</button>
+      <label style="display:flex; align-items:center; gap:12px; justify-content:center; background:var(--panel); border:1px solid var(--edge); border-radius:10px; padding:0 12px;">
+        <span>LLM Enabled</span>
+        <label class="switch" style="position:relative; display:inline-block; width:54px; height:30px;">
+          <input id="llmToggle" type="checkbox" style="opacity:0; width:0; height:0;">
+          <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#243548; transition:.2s; border-radius:999px;">
+            <span style="position:absolute; height:22px; width:22px; left:4px; top:4px; background:white; border-radius:50%; transition:.2s; box-shadow:0 2px 6px rgba(0,0,0,0.25);"></span>
+          </span>
+        </label>
+      </label>
+    </div>
+
+    <div class="stats">
+      <div class="metric">
+        <div class="label">Trust score</div>
+        <div class="value" id="scoreValue">--</div>
+        <div class="bar"><span id="scoreBar" style="width:0%"></span></div>
+      </div>
+      <div class="metric">
+        <div class="label">Syntax Health</div>
+        <div class="value" id="syntaxValue">--</div>
+        <div class="bar"><span id="syntaxBar" style="width:0%"></span></div>
+      </div>
+      <div class="metric">
+        <div class="label">Machine Safety</div>
+        <div class="value" id="safetyValue">--</div>
+        <div class="bar"><span id="safetyBar" style="width:0%"></span></div>
+      </div>
+      <div class="metric">
+        <div class="label">Layout Precision</div>
+        <div class="value" id="layoutValue">--</div>
+        <div class="bar"><span id="layoutBar" style="width:0%"></span></div>
+      </div>
+    </div>
+
+    <div class="io-grid">
+      <section class="panel">
+        <h3>1. Legacy input <span class="sub">(parsed from TDS / IDS)</span></h3>
+        <div class="resource-list" id="inputResources">
+          <p class="sub">Run a migration to inspect the parsed input resources.</p>
+        </div>
+      </section>
+      <section class="panel">
+        <h3>2. Generated SRD output</h3>
+        <div class="resource-list" id="outputResources">
+          <p class="sub">The corresponding SRD resources will appear here.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="main-grid">
+      <div class="panel">
+        <h3>Pipeline Trace</h3>
+        <ul class="trace" id="traceList"></ul>
+      </div>
+      <div class="panel">
+        <h3>Legacy BMP → SRD image preview</h3>
+        <div class="image-preview-controls">
+          <label for="imageResourceSelect">IDS image resource
+            <select id="imageResourceSelect" disabled>
+              <option value="">Run a migration first</option>
+            </select>
+          </label>
+          <label for="bitmapUpload">Select the matching local BMP
+            <input id="bitmapUpload" type="file" accept=".bmp,image/bmp" />
+          </label>
+        </div>
+        <button id="sampleImageButton" type="button">Load selected sample BMP</button>
+        <div class="ratio-controls">
+          <p class="ratio-help">Set the target width:height ratio for this IDS image. The SRD keeps its generated width and adjusts its height.</p>
+          <label for="aspectRatioWidth">Ratio width
+            <input id="aspectRatioWidth" type="number" min="1" max="1000" value="1" disabled />
+          </label>
+          <label for="aspectRatioHeight">Ratio height
+            <input id="aspectRatioHeight" type="number" min="1" max="1000" value="1" disabled />
+          </label>
+          <button id="applyAspectRatio" type="button" disabled>Apply ratio to SRD</button>
+          <button id="resetAspectRatio" type="button" disabled>Reset ratio</button>
+        </div>
+        <p class="status" id="imagePreviewStatus">The BMP stays in your browser; it is not uploaded to the server.</p>
+        <div class="canvas-wrap">
+          <canvas id="legacyCanvas" width="320" height="240"></canvas>
+          <canvas id="targetCanvas" width="800" height="480"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs panel" style="margin-top:18px;">
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button class="tab-button active" data-tab="xmlTab">Generated SRD XML</button>
+        <button class="tab-button" data-tab="dictTab">Dynamic Dictionary</button>
+        <button class="tab-button" data-tab="roiTab">Business ROI</button>
+      </div>
+      <div class="tab-panel active" id="xmlTab">
+        <pre id="xmlOutput"></pre>
+      </div>
+      <div class="tab-panel" id="dictTab">
+        <pre id="dictionaryOutput"></pre>
+      </div>
+      <div class="tab-panel" id="roiTab">
+        <div class="roi-grid">
+          <div>
+            <label for="migrationsRange">Annual migrations</label>
+            <input id="migrationsRange" type="range" min="1" max="200" value="42" />
+            <div class="status" id="migrationCount">42 migrations</div>
+          </div>
+          <div>
+            <div class="metric" style="height:100%;">
+              <div class="label">Savings</div>
+              <div class="value" id="roiValue">€0</div>
+              <div class="status" id="hoursValue">0 hours saved</div>
+              <div class="status" id="fteValue">0 FTEs freed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const traceList = document.getElementById('traceList');
+    const xmlOutput = document.getElementById('xmlOutput');
+    const dictionaryOutput = document.getElementById('dictionaryOutput');
+    const scoreValue = document.getElementById('scoreValue');
+    const syntaxValue = document.getElementById('syntaxValue');
+    const safetyValue = document.getElementById('safetyValue');
+    const layoutValue = document.getElementById('layoutValue');
+    const scoreBar = document.getElementById('scoreBar');
+    const syntaxBar = document.getElementById('syntaxBar');
+    const safetyBar = document.getElementById('safetyBar');
+    const layoutBar = document.getElementById('layoutBar');
+    const tierPill = document.getElementById('tierPill');
+    const inputResources = document.getElementById('inputResources');
+    const outputResources = document.getElementById('outputResources');
+    const imageResourceSelect = document.getElementById('imageResourceSelect');
+    const bitmapUpload = document.getElementById('bitmapUpload');
+    const imagePreviewStatus = document.getElementById('imagePreviewStatus');
+    const aspectRatioWidth = document.getElementById('aspectRatioWidth');
+    const aspectRatioHeight = document.getElementById('aspectRatioHeight');
+    const applyAspectRatio = document.getElementById('applyAspectRatio');
+    const resetAspectRatio = document.getElementById('resetAspectRatio');
+    let activeBitmap = null;
+    let activeBitmapUrl = null;
+    let activeBitmapName = '';
+    let currentMigration = null;
+    let activeAspectOverrides = {};
+
+    const llmToggle = document.getElementById('llmToggle');
+
+    function persistLLMState(enabled) {
+      localStorage.setItem('assert-llm-enabled', String(enabled));
+    }
+
+    function loadLLMState() {
+      const val = localStorage.getItem('assert-llm-enabled');
+      return val === null ? false : val === 'true';
+    }
+
+    function syncLLMToggle() {
+      const enabled = loadLLMState();
+      llmToggle.checked = enabled;
+    }
+
+    async function callApi(path, method='GET', body={}) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+      if (method !== 'GET') opts.body = JSON.stringify(body);
+      const res = await fetch(path, opts);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || `Request failed with status ${res.status}.`);
+      return data;
+    }
+
+    function setMetric(value, node, barNode) {
+      node.textContent = `${value}%`;
+      barNode.style.width = `${Math.max(0, Math.min(100, value))}%`;
+    }
+
+    function updateTier(tier) {
+      tierPill.textContent = tier;
+      tierPill.className = 'pill';
+      if (tier === 'Green') tierPill.classList.add('green');
+      if (tier === 'Amber') tierPill.classList.add('warn');
+      if (tier === 'Red') tierPill.classList.add('red');
+    }
+
+    function renderLegacyCanvas() {
+      const c = document.getElementById('legacyCanvas');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.fillStyle = '#0c1b2a'; ctx.fillRect(0,0,c.width,c.height);
+      ctx.strokeStyle = '#6dc1ff'; ctx.strokeRect(1,1,c.width-2,c.height-2);
+      ctx.fillStyle = '#dbe9ff'; ctx.font = '16px sans-serif';
+      ctx.fillText('DP600 · legacy', 12, 24);
+      ctx.fillStyle = '#9eb4d1'; ctx.font = '14px sans-serif';
+      ctx.fillText('Load a BMP to preview this resource', 16, 125);
+    }
+
+    function renderTargetCanvas() {
+      const c = document.getElementById('targetCanvas');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      ctx.fillStyle = '#101b2a'; ctx.fillRect(0,0,c.width,c.height);
+      ctx.strokeStyle = '#6dc1ff'; ctx.strokeRect(1,1,c.width-2,c.height-2);
+      ctx.fillStyle = '#dbe9ff'; ctx.font = '20px sans-serif';
+      ctx.fillText('DM710 · generated SRD', 20, 32);
+      ctx.fillStyle = '#9eb4d1'; ctx.font = '18px sans-serif';
+      ctx.fillText('Load a BMP to preview the generated size', 24, 240);
+    }
+
+    function renderDictionary(data) {
+      dictionaryOutput.textContent = JSON.stringify(data, null, 2);
+    }
+
+    function renderTrace(logs) {
+      traceList.innerHTML = '';
+      const items = Array.isArray(logs) ? logs : [];
+      items.forEach((entry) => {
+        const li = document.createElement('li');
+        li.textContent = entry;
+        traceList.appendChild(li);
+      });
+    }
+
+    function addDetail(card, label, value, muted=false) {
+      const line = document.createElement('p');
+      if (muted) line.className = 'muted';
+      const strong = document.createElement('strong');
+      strong.textContent = `${label}: `;
+      line.append(strong, document.createTextNode(value || '—'));
+      card.appendChild(line);
+    }
+
+    function addPayload(card, label, value) {
+      if (!value) return;
+      const details = document.createElement('details');
+      const summary = document.createElement('summary');
+      summary.textContent = label;
+      const pre = document.createElement('pre');
+      pre.textContent = value;
+      details.append(summary, pre);
+      card.appendChild(details);
+    }
+
+    function renderInputOutput(result) {
+      inputResources.replaceChildren();
+      outputResources.replaceChildren();
+      const input = result.input_document || {};
+      const textEntries = input.text_entries || [];
+      const imageEntries = input.image_entries || [];
+      const traces = result.translation_trace || [];
+      currentMigration = result;
+      activeAspectOverrides = result.aspect_ratio_overrides || activeAspectOverrides;
+      const selectedImageId = imageResourceSelect.value;
+      imageResourceSelect.replaceChildren();
+      imageEntries.forEach((entry) => {
+        const option = document.createElement('option');
+        option.value = entry.id;
+        option.textContent = `${entry.file_name} (${entry.width} × ${entry.height})`;
+        imageResourceSelect.appendChild(option);
+      });
+      imageResourceSelect.disabled = imageEntries.length === 0;
+      if (imageEntries.some(entry => entry.id === selectedImageId)) {
+        imageResourceSelect.value = selectedImageId;
+      }
+      syncAspectRatioInputs();
+      drawBitmapPreview();
+      const xml = new DOMParser().parseFromString(result.srd_xml || '', 'application/xml');
+      const parseError = xml.querySelector('parsererror');
+      if (parseError) {
+        outputResources.textContent = 'Could not parse generated SRD XML.';
+        return;
+      }
+
+      const outputNodes = Array.from(xml.querySelectorAll('ScreenLibrary > FC, ScreenLibrary > Image'));
+      const renderInput = (entry, kind, outputNode, trace) => {
+        const card = document.createElement('article');
+        card.className = 'resource-card';
+        const title = document.createElement('h4');
+        title.textContent = `${kind} · ${entry.id}`;
+        card.appendChild(title);
+        addDetail(card, 'Source', entry.source_file, true);
+        if (kind === 'Text') {
+          addDetail(card, 'Legacy format', entry.legacy_format);
+          addDetail(card, 'Description', entry.description);
+        } else {
+          addDetail(card, 'Bitmap', entry.file_name);
+          addDetail(card, 'Legacy position / size', `${entry.x}, ${entry.y} · ${entry.width} × ${entry.height} px`);
+        }
+        addDetail(card, 'CAN signal', entry.can_signal);
+        addDetail(card, 'Polarity', entry.polarity);
+        addDetail(card, 'Processing path', trace?.route);
+        if (trace?.route?.startsWith('Case A')) {
+          addPayload(card, 'Exact LLM input', JSON.stringify(trace.input, null, 2));
+        }
+        inputResources.appendChild(card);
+
+        const resultCard = document.createElement('article');
+        resultCard.className = 'resource-card';
+        const resultTitle = document.createElement('h4');
+        resultTitle.textContent = `${outputNode ? outputNode.tagName : 'Missing SRD node'}${outputNode ? ` · ${outputNode.getAttribute('ID') || ''}` : ''}`;
+        resultCard.appendChild(resultTitle);
+        addDetail(resultCard, 'Matched rule ID', trace?.rule_id);
+        if (trace?.rule_output) {
+          addPayload(resultCard, trace.route?.startsWith('Case A') ? 'LLM rule response' : 'Dictionary rule', trace.rule_output);
+        }
+        if (outputNode) {
+          addDetail(resultCard, 'Provenance', outputNode.getAttribute('Provenance'), true);
+          if (outputNode.tagName === 'FC') {
+            addDetail(resultCard, 'Output format', outputNode.querySelector('Format')?.textContent || outputNode.getAttribute('Legacy'));
+            addDetail(resultCard, 'Mapped signal', outputNode.getAttribute('Signal'));
+          } else {
+            addDetail(resultCard, 'Bitmap', outputNode.getAttribute('File'));
+            addDetail(resultCard, 'Target position / size', `${outputNode.getAttribute('X')}, ${outputNode.getAttribute('Y')} · ${outputNode.getAttribute('Width')} × ${outputNode.getAttribute('Height')} px`);
+            addDetail(resultCard, 'Aspect ratio', outputNode.getAttribute('AspectRatio'));
+            addDetail(resultCard, 'Aspect locked', outputNode.getAttribute('LockAspect'));
+          }
+          addDetail(resultCard, 'Polarity', outputNode.getAttribute('Polarity'));
+          addPayload(resultCard, 'Generated SRD XML node', trace?.generated_srd);
+        }
+        outputResources.appendChild(resultCard);
+      };
+
+      const resources = [
+        ...textEntries.map(entry => ({ entry, kind: 'Text' })),
+        ...imageEntries.map(entry => ({ entry, kind: 'Image' }))
+      ];
+      resources.forEach(({ entry, kind }, index) => {
+        renderInput(entry, kind, outputNodes[index], traces[index]);
+      });
+      if (resources.length === 0) {
+        inputResources.textContent = 'No legacy resources were found.';
+      }
+      if (outputNodes.length === 0) {
+        outputResources.textContent = 'No SRD resources were generated.';
+      }
+    }
+
+    function drawBitmapPreview() {
+      if (!activeBitmap) {
+        renderLegacyCanvas();
+        renderTargetCanvas();
+        const entry = currentMigration?.input_document?.image_entries
+          ?.find(item => item.id === imageResourceSelect.value);
+        if (entry && currentMigration) {
+          const xml = new DOMParser().parseFromString(currentMigration.srd_xml || '', 'application/xml');
+          const outputNode = Array.from(xml.querySelectorAll('ScreenLibrary > Image'))
+            .find(node => node.getAttribute('ID') === `IMG_${entry.id}`);
+          if (outputNode) {
+            imagePreviewStatus.textContent =
+              `${entry.file_name}: generated SRD size ${outputNode.getAttribute('Width')}×${outputNode.getAttribute('Height')} px ` +
+              `at aspect ratio ${outputNode.getAttribute('AspectRatio')}. Load the matching BMP to see the image.`;
+            return;
+          }
+        }
+        imagePreviewStatus.textContent = 'Select a BMP to preview it. The file stays in your browser and is not uploaded.';
+        return;
+      }
+
+      const entries = currentMigration?.input_document?.image_entries || [];
+      const entry = entries.find(item => item.id === imageResourceSelect.value);
+      if (!entry) {
+        imagePreviewStatus.textContent = 'Run a migration and select an IDS image resource first.';
+        return;
+      }
+
+      const xml = new DOMParser().parseFromString(currentMigration.srd_xml || '', 'application/xml');
+      const outputNode = Array.from(xml.querySelectorAll('ScreenLibrary > Image'))
+        .find(node => node.getAttribute('ID') === `IMG_${entry.id}`);
+      if (!outputNode) {
+        imagePreviewStatus.textContent = `No generated SRD image was found for ${entry.file_name}.`;
+        return;
+      }
+
+      const legacyCanvas = document.getElementById('legacyCanvas');
+      const legacyContext = legacyCanvas.getContext('2d');
+      legacyContext.fillStyle = '#0c1b2a';
+      legacyContext.fillRect(0, 0, legacyCanvas.width, legacyCanvas.height);
+      legacyContext.strokeStyle = '#6dc1ff';
+      legacyContext.strokeRect(1, 1, legacyCanvas.width - 2, legacyCanvas.height - 2);
+      legacyContext.fillStyle = '#dbe9ff';
+      legacyContext.font = '14px sans-serif';
+      legacyContext.fillText('DP600 · legacy', 10, 20);
+      legacyContext.imageSmoothingEnabled = false;
+      legacyContext.drawImage(activeBitmap, entry.x, entry.y, entry.width, entry.height);
+
+      const targetCanvas = document.getElementById('targetCanvas');
+      const targetContext = targetCanvas.getContext('2d');
+      targetContext.fillStyle = '#101b2a';
+      targetContext.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+      targetContext.strokeStyle = '#6dc1ff';
+      targetContext.strokeRect(1, 1, targetCanvas.width - 2, targetCanvas.height - 2);
+      targetContext.fillStyle = '#dbe9ff';
+      targetContext.font = '18px sans-serif';
+      targetContext.fillText('DM710 · generated SRD', 20, 28);
+      targetContext.imageSmoothingEnabled = false;
+      targetContext.drawImage(
+        activeBitmap,
+        Number(outputNode.getAttribute('X')),
+        Number(outputNode.getAttribute('Y')),
+        Number(outputNode.getAttribute('Width')),
+        Number(outputNode.getAttribute('Height'))
+      );
+
+      const nameWarning = activeBitmapName && activeBitmapName.toLowerCase() !== entry.file_name.toLowerCase()
+        ? ` Selected file name differs from IDS entry ${entry.file_name}.`
+        : '';
+      imagePreviewStatus.textContent =
+        `${entry.file_name}: ${entry.width}×${entry.height} px at (${entry.x}, ${entry.y}) → ` +
+        `${outputNode.getAttribute('Width')}×${outputNode.getAttribute('Height')} px at ` +
+        `(${outputNode.getAttribute('X')}, ${outputNode.getAttribute('Y')}); ` +
+        `aspect ratio ${outputNode.getAttribute('AspectRatio')}; aspect lock ${outputNode.getAttribute('LockAspect')}.${nameWarning}`;
+    }
+
+    function syncAspectRatioInputs() {
+      const imageId = imageResourceSelect.value;
+      const enabled = Boolean(currentMigration && imageId);
+      aspectRatioWidth.disabled = !enabled;
+      aspectRatioHeight.disabled = !enabled;
+      applyAspectRatio.disabled = !enabled;
+      resetAspectRatio.disabled = !enabled;
+      if (!enabled) return;
+
+      const override = activeAspectOverrides[imageId];
+      if (override) {
+        aspectRatioWidth.value = override.width;
+        aspectRatioHeight.value = override.height;
+        return;
+      }
+      const xml = new DOMParser().parseFromString(currentMigration.srd_xml || '', 'application/xml');
+      const node = Array.from(xml.querySelectorAll('ScreenLibrary > Image'))
+        .find(item => item.getAttribute('ID') === `IMG_${imageId}`);
+      const [width, height] = (node?.getAttribute('AspectRatio') || '1:1').split(':').map(Number);
+      aspectRatioWidth.value = width;
+      aspectRatioHeight.value = height;
+    }
+
+    async function refreshDictionary() {
+      const data = await callApi('/api/dictionary');
+      renderDictionary(data);
+    }
+
+    async function runDemo(scenario='demo', aspectRatioOverrides=activeAspectOverrides) {
+      const llmMode = llmToggle.checked;
+      persistLLMState(llmMode);
+      const result = await callApi('/api/migrate', 'POST', {
+        scenario,
+        use_local_ollama: llmMode,
+        aspect_ratio_overrides: aspectRatioOverrides
+      });
+      if (result && result.score !== undefined) {
+        setMetric(result.score, scoreValue, scoreBar);
+        setMetric(result.score, syntaxValue, syntaxBar);
+        setMetric(result.score, safetyValue, safetyBar);
+        setMetric(result.score, layoutValue, layoutBar);
+        renderTrace(result.logs || []);
+        xmlOutput.textContent = result.srd_xml || '';
+        renderInputOutput(result);
+        updateTier(result.tier || 'Ready');
+      }
+      await refreshDictionary();
+    }
+
+    document.getElementById('runDemo').addEventListener('click', () => runDemo('demo'));
+    document.getElementById('runHazard').addEventListener('click', () => runDemo('hazard'));
+    document.getElementById('resetDict').addEventListener('click', async () => {
+      await callApi('/api/reset-dictionary', 'POST', {});
+      await refreshDictionary();
+      renderTrace(['Dictionary reset to initial state.']);
+      updateTier('Ready');
+    });
+
+    document.querySelectorAll('.tab-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach((btn) => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+
+    document.getElementById('migrationsRange').addEventListener('input', (event) => {
+      const n = Number(event.target.value);
+      const hours = 38 * n;
+      const eur = hours * 75;
+      const fte = n / 110;
+      document.getElementById('migrationCount').textContent = `${n} migrations`;
+      document.getElementById('hoursValue').textContent = `${hours.toLocaleString()} hours saved`;
+      document.getElementById('roiValue').textContent = `€${eur.toLocaleString()}`;
+      document.getElementById('fteValue').textContent = `${fte.toFixed(2)} FTEs freed`;
+    });
+
+    imageResourceSelect.addEventListener('change', () => {
+      syncAspectRatioInputs();
+      drawBitmapPreview();
+    });
+    applyAspectRatio.addEventListener('click', async () => {
+      const imageId = imageResourceSelect.value;
+      const width = Number(aspectRatioWidth.value);
+      const height = Number(aspectRatioHeight.value);
+      if (!imageId || !Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) {
+        imagePreviewStatus.textContent = 'Enter positive whole numbers for both parts of the aspect ratio.';
+        return;
+      }
+      const overrides = { ...activeAspectOverrides, [imageId]: { width, height } };
+      try {
+        await runDemo(currentMigration?.scenario || 'demo', overrides);
+      } catch (error) {
+        imagePreviewStatus.textContent = `Could not apply aspect ratio: ${error.message}`;
+      }
+    });
+    resetAspectRatio.addEventListener('click', async () => {
+      const imageId = imageResourceSelect.value;
+      const overrides = { ...activeAspectOverrides };
+      delete overrides[imageId];
+      try {
+        await runDemo(currentMigration?.scenario || 'demo', overrides);
+      } catch (error) {
+        imagePreviewStatus.textContent = `Could not reset aspect ratio: ${error.message}`;
+      }
+    });
+    function loadBitmap(blob, name) {
+      activeBitmap = null;
+      if (activeBitmapUrl) URL.revokeObjectURL(activeBitmapUrl);
+      activeBitmapName = name;
+      const image = new Image();
+      image.onload = () => {
+        activeBitmap = image;
+        drawBitmapPreview();
+      };
+      image.onerror = () => {
+        imagePreviewStatus.textContent = `Could not read ${name} as an image. Choose a valid BMP file.`;
+      };
+      activeBitmapUrl = URL.createObjectURL(blob);
+      image.src = activeBitmapUrl;
+    }
+
+    bitmapUpload.addEventListener('change', () => {
+      const file = bitmapUpload.files[0];
+      if (!file) {
+        activeBitmap = null;
+        activeBitmapName = '';
+        if (activeBitmapUrl) URL.revokeObjectURL(activeBitmapUrl);
+        activeBitmapUrl = null;
+        drawBitmapPreview();
+        return;
+      }
+      loadBitmap(file, file.name);
+    });
+
+    document.getElementById('sampleImageButton').addEventListener('click', async () => {
+      const selectedEntry = currentMigration?.input_document?.image_entries
+        ?.find(item => item.id === imageResourceSelect.value);
+      const samplePaths = {
+        'TORTUGA.BMP': '/static/sample-images/TORTUGA.BMP',
+        'GAUGE_RPM.BMP': '/static/sample-images/GAUGE_RPM.BMP'
+      };
+      const samplePath = selectedEntry && samplePaths[selectedEntry.file_name.toUpperCase()];
+      if (!samplePath) {
+        imagePreviewStatus.textContent = 'No packaged sample exists for this IDS filename. Choose its local BMP instead.';
+        return;
+      }
+      try {
+        const response = await fetch(samplePath);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const bitmap = await response.blob();
+        loadBitmap(bitmap, selectedEntry.file_name);
+      } catch (error) {
+        imagePreviewStatus.textContent = `Unable to load the sample image: ${error.message}`;
+      }
+    });
+
+    llmToggle.addEventListener('change', () => {
+      persistLLMState(llmToggle.checked);
+    });
+
+    syncLLMToggle();
+    renderLegacyCanvas();
+    renderTargetCanvas();
+    refreshDictionary();
+    renderTrace(['System ready.']);
+  </script>
+</body>
+</html>

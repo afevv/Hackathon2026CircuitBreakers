@@ -1,0 +1,24 @@
+<ImageDataSource>
+  <ImageResource ID="I_001">
+    <SourceFileName>TORTUGA.BMP</SourceFileName>
+    <X>40</X>
+    <Y>24</Y>
+    <W>32</W>
+    <H>32</H>
+    <ColorDepth>1</ColorDepth>
+    <OutputFormat>RLE</OutputFormat>
+    <CAN>ICON_TORTUGA</CAN>
+    <Polarity>NORMAL</Polarity>
+  </ImageResource>
+  <ImageResource ID="I_002">
+    <SourceFileName>GAUGE_RPM.BMP</SourceFileName>
+    <X>120</X>
+    <Y>40</Y>
+    <W>100</W>
+    <H>100</H>
+    <ColorDepth>1</ColorDepth>
+    <OutputFormat>RLE</OutputFormat>
+    <CAN>GAUGE_RPM</CAN>
+    <Polarity>NORMAL</Polarity>
+  </ImageResource>
+</ImageDataSource>

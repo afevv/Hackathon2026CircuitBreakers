@@ -1,0 +1,20 @@
+<TextDataSource>
+  <Resource ID="T_001">
+    <Description>Supply voltage value</Description>
+    <Text>Supply Voltage %4d V</Text>
+    <CAN>SUPPLY_VOLTAGE</CAN>
+    <Polarity>NORMAL</Polarity>
+  </Resource>
+  <Resource ID="T_002">
+    <Description>Engine speed value</Description>
+    <Text>Engine Speed %4d RPM</Text>
+    <CAN>ENGINE_SPEED</CAN>
+    <Polarity>NORMAL</Polarity>
+  </Resource>
+  <Resource ID="T_003">
+    <Description>Hydraulic temperature value</Description>
+    <Text>Hydraulic Temp %+04d C</Text>
+    <CAN>HYDRAULIC_TEMP</CAN>
+    <Polarity>NORMAL</Polarity>
+  </Resource>
+</TextDataSource>
