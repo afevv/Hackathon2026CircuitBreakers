@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ScreenRepository>
+  <FileFormat>006A</FileFormat>
+  <!-- # FileFormat value "006A" is example-derived and requires confirmation -->
+  <ScreenLibrary Name="Library">
+    <!-- # ScreenLibrary Name="Library" is a converter default rather than source-derived -->
+    <Folder Name="Main">
+      <Folder Name="AnotherFolder">
+        <Text>
+          <ID>4</ID>
+          <Description>ShowPlusSign</Description>
+          <Used_by />
+          <String LanguageIndex="1" TextData="ShowPlusSign %1$ V" />
+          <String LanguageIndex="2" TextData="ShowPlusSign %1$ V" />
+          <Inputs Count="1">
+            <FC Type="" Digits="" Value="" Prefix="" Padding="" Base="" Alt="" />
+            <!-- # FC 1 unresolved; source format="%+04d" -->
+          </Inputs>
+        </Text>
+      </Folder>
+      <Text>
+        <ID>1</ID>
+        <Description>SupplyVoltage</Description>
+        <Used_by />
+        <String LanguageIndex="1" TextData="Supply Voltage %1$ V" />
+        <String LanguageIndex="2" TextData="Forsyningsspænding %1$ V" />
+        <Inputs Count="1">
+          <FC Type="" Digits="" Value="" Prefix="" Padding="" Base="" Alt="" />
+          <!-- # FC 1 unresolved; source format="%4d" -->
+        </Inputs>
+      </Text>
+      <Text>
+        <ID>2</ID>
+        <Description>Hexadecimal</Description>
+        <Used_by />
+        <String LanguageIndex="1" TextData="Hexadecimal %1$" />
+        <String LanguageIndex="2" TextData="Hexadecimal %1$" />
+        <Inputs Count="1">
+          <FC Type="" Digits="" Value="" Prefix="" Padding="" Base="" Alt="" />
+          <!-- # FC 1 unresolved; source format="%4x" -->
+        </Inputs>
+      </Text>
+      <Text>
+        <ID>3</ID>
+        <Description>LeadingZeros</Description>
+        <Used_by />
+        <String LanguageIndex="1" TextData="Leading Zeros %1$ V" />
+        <String LanguageIndex="2" TextData="Leading Zeros %1$ V" />
+        <Inputs Count="1">
+          <FC Type="" Digits="" Value="" Prefix="" Padding="" Base="" Alt="" />
+          <!-- # FC 1 unresolved; source format="%04d" -->
+        </Inputs>
+      </Text>
+      <Image>
+        <ID>6</ID>
+        <Description>TORTUGA</Description>
+        <!-- # Image Description preserved; semantic renaming requires a later stage -->
+        <SourceFileName>TORTUGA.BMP</SourceFileName>
+        <!-- # SourceFileName preserved; any target rename must also rename or copy the physical bitmap -->
+        <Width>53</Width>
+        <Height>29</Height>
+        <FlipH>false</FlipH>
+        <FlipV>false</FlipV>
+        <ImageFormatName />
+        <!-- # ImageFormatName cannot be derived directly from IDS ColorDepth and OutputFormat -->
+        <PixelOrigo>0</PixelOrigo>
+        <InsertionPoint X="0" Y="0" />
+        <Transparent PaletteColor="0" X="0" Y="28" LowLeft="1" />
+        <!-- # Transparent attributes preserved; target transparency behavior is not confirmed -->
+        <!-- # Untranslated source Image element: <Used_by><ModuleName>MAINTASK</ModuleName></Used_by> -->
+      </Image>
+    </Folder>
+    <Image>
+      <ID>5</ID>
+      <Description>LIEBRE</Description>
+      <!-- # Image Description preserved; semantic renaming requires a later stage -->
+      <SourceFileName>LIEBRE.BMP</SourceFileName>
+      <!-- # SourceFileName preserved; any target rename must also rename or copy the physical bitmap -->
+      <Width>43</Width>
+      <Height>39</Height>
+      <FlipH>false</FlipH>
+      <FlipV>false</FlipV>
+      <ImageFormatName />
+      <!-- # ImageFormatName cannot be derived directly from IDS ColorDepth and OutputFormat -->
+      <PixelOrigo>0</PixelOrigo>
+      <InsertionPoint X="0" Y="0" />
+      <Transparent PaletteColor="0" X="0" Y="38" LowLeft="1" />
+      <!-- # Transparent attributes preserved; target transparency behavior is not confirmed -->
+      <!-- # Untranslated source Image element: <Used_by> <ModuleName>MAINTASK</ModuleName> </Used_by> -->
+    </Image>
+    <LanguageDefinition DefLang="1" OrgLang="1">
+      <Language>
+        <Name>English</Name>
+        <Index>1</Index>
+        <Hidden>0</Hidden>
+        <DefaultCodePage>1252</DefaultCodePage>
+      </Language>
+      <Language>
+        <Name>Danish</Name>
+        <Index>2</Index>
+        <Hidden>0</Hidden>
+        <DefaultCodePage>1252</DefaultCodePage>
+      </Language>
+    </LanguageDefinition>
+  </ScreenLibrary>
+  <ScreenDefRepository>
+    <!-- # ScreenDefRepository requires old screen-layout data not present in TDS or IDS -->
+  </ScreenDefRepository>
+  <ApplogDefRepository />
+  <!-- # ApplogDefRepository is included from the objective example; no source mapping is available -->
+</ScreenRepository>

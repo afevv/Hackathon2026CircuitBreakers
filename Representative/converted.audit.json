@@ -1,0 +1,196 @@
+{
+  "llm_enabled": true,
+  "model": "qwen2.5:3b",
+  "note": "AI translations and synthetic layouts are proposals only; unresolved tasks remain open. No real screen-layout source was supplied.",
+  "resources": [
+    {
+      "link_id": "SEC-001",
+      "kind": "Text",
+      "original_id": "4",
+      "output_id": 4,
+      "description": "ShowPlusSign",
+      "folder_path": [
+        "Main",
+        "AnotherFolder"
+      ],
+      "task_ids": [
+        3
+      ],
+      "status": "needs_review",
+      "proposal": {
+        "library_xml": "",
+        "screendef_xml": "",
+        "dimensions_estimated": false,
+        "source": "LLM_ERROR",
+        "error": "HTTP Error 404: Not Found"
+      },
+      "evaluation": {
+        "Tags": false,
+        "Layout": false,
+        "Reversibility": false,
+        "satisfied_count": 0,
+        "category": "RED",
+        "explanation": "Only 0/3 metrics passed; failed [Tags, Layout, Reversibility]: HTTP Error 404: Not Found",
+        "bbox": null
+      }
+    },
+    {
+      "link_id": "SEC-002",
+      "kind": "Text",
+      "original_id": "1",
+      "output_id": 1,
+      "description": "SupplyVoltage",
+      "folder_path": [
+        "Main"
+      ],
+      "task_ids": [
+        4
+      ],
+      "status": "needs_review",
+      "proposal": {
+        "library_xml": "",
+        "screendef_xml": "",
+        "dimensions_estimated": false,
+        "source": "LLM_ERROR",
+        "error": "HTTP Error 404: Not Found"
+      },
+      "evaluation": {
+        "Tags": false,
+        "Layout": false,
+        "Reversibility": false,
+        "satisfied_count": 0,
+        "category": "RED",
+        "explanation": "Only 0/3 metrics passed; failed [Tags, Layout, Reversibility]: HTTP Error 404: Not Found",
+        "bbox": null
+      }
+    },
+    {
+      "link_id": "SEC-003",
+      "kind": "Text",
+      "original_id": "2",
+      "output_id": 2,
+      "description": "Hexadecimal",
+      "folder_path": [
+        "Main"
+      ],
+      "task_ids": [
+        5
+      ],
+      "status": "needs_review",
+      "proposal": {
+        "library_xml": "",
+        "screendef_xml": "",
+        "dimensions_estimated": false,
+        "source": "LLM_ERROR",
+        "error": "HTTP Error 404: Not Found"
+      },
+      "evaluation": {
+        "Tags": false,
+        "Layout": false,
+        "Reversibility": false,
+        "satisfied_count": 0,
+        "category": "RED",
+        "explanation": "Only 0/3 metrics passed; failed [Tags, Layout, Reversibility]: HTTP Error 404: Not Found",
+        "bbox": null
+      }
+    },
+    {
+      "link_id": "SEC-004",
+      "kind": "Text",
+      "original_id": "3",
+      "output_id": 3,
+      "description": "LeadingZeros",
+      "folder_path": [
+        "Main"
+      ],
+      "task_ids": [
+        6
+      ],
+      "status": "needs_review",
+      "proposal": {
+        "library_xml": "",
+        "screendef_xml": "",
+        "dimensions_estimated": false,
+        "source": "LLM_ERROR",
+        "error": "HTTP Error 404: Not Found"
+      },
+      "evaluation": {
+        "Tags": false,
+        "Layout": false,
+        "Reversibility": false,
+        "satisfied_count": 0,
+        "category": "RED",
+        "explanation": "Only 0/3 metrics passed; failed [Tags, Layout, Reversibility]: HTTP Error 404: Not Found",
+        "bbox": null
+      }
+    },
+    {
+      "link_id": "SEC-005",
+      "kind": "Image",
+      "original_id": "2",
+      "output_id": 6,
+      "description": "TORTUGA",
+      "folder_path": [
+        "Main"
+      ],
+      "task_ids": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "status": "needs_review",
+      "proposal": {
+        "library_xml": "",
+        "screendef_xml": "",
+        "dimensions_estimated": false,
+        "source": "LLM_ERROR",
+        "error": "HTTP Error 404: Not Found"
+      },
+      "evaluation": {
+        "Tags": false,
+        "Layout": false,
+        "Reversibility": false,
+        "satisfied_count": 0,
+        "category": "RED",
+        "explanation": "Only 0/3 metrics passed; failed [Tags, Layout, Reversibility]: HTTP Error 404: Not Found",
+        "bbox": null
+      }
+    },
+    {
+      "link_id": "SEC-006",
+      "kind": "Image",
+      "original_id": "1",
+      "output_id": 5,
+      "description": "LIEBRE",
+      "folder_path": [
+        "Main"
+      ],
+      "task_ids": [
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "status": "needs_review",
+      "proposal": {
+        "library_xml": "",
+        "screendef_xml": "",
+        "dimensions_estimated": false,
+        "source": "LLM_ERROR",
+        "error": "HTTP Error 404: Not Found"
+      },
+      "evaluation": {
+        "Tags": false,
+        "Layout": false,
+        "Reversibility": false,
+        "satisfied_count": 0,
+        "category": "RED",
+        "explanation": "Only 0/3 metrics passed; failed [Tags, Layout, Reversibility]: HTTP Error 404: Not Found",
+        "bbox": null
+      }
+    }
+  ]
+}

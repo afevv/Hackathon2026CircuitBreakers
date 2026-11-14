@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ImageDataSource>
+	<FileFormat>001E</FileFormat>
+	<Folder Name="Main">
+		<Image>
+			<ID>2</ID>
+			<Description>TORTUGA</Description>
+			<SourceFileName>TORTUGA.BMP</SourceFileName>
+			<OutputFormat>RLE</OutputFormat>
+			<ColorDepth>1</ColorDepth>
+			<PixelOrigo>0</PixelOrigo>
+			<InsertionPoint X="0" Y="0"/>
+			<Transparent PaletteColor="0" X="0" Y="28" LowLeft="1"/>
+			<Palette>
+				<Default>0</Default>
+				<FromBmp>0</FromBmp>
+				<Name></Name>
+				<ViewPaletteName></ViewPaletteName>
+			</Palette>
+			<Used_by><ModuleName>MAINTASK</ModuleName></Used_by>
+		</Image>
+	</Folder>
+	<Image>
+		<ID>1</ID>
+		<Description>LIEBRE</Description>
+		<SourceFileName>LIEBRE.BMP</SourceFileName>
+		<OutputFormat>RLE</OutputFormat>
+		<ColorDepth>8</ColorDepth>
+		<PixelOrigo>0</PixelOrigo>
+		<InsertionPoint X="0" Y="0"/>
+		<Transparent PaletteColor="0" X="0" Y="38" LowLeft="1"/>
+		<Palette>
+			<Default>0</Default>
+			<FromBmp>1</FromBmp>
+			<Name>LIEBRE</Name>
+			<ViewPaletteName></ViewPaletteName>
+		</Palette>
+		<Used_by>
+			<ModuleName>MAINTASK</ModuleName>
+		</Used_by>
+	</Image>
+</ImageDataSource>

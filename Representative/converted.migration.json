@@ -1,0 +1,483 @@
+{
+  "manifest_version": 1,
+  "purpose": "Tasks not completed by the deterministic TDS/IDS to SDR converter",
+  "source_files": {
+    "tds": "TEXTDATA.TDS",
+    "ids": "IMAGEDATA.IDS",
+    "image_directory": null
+  },
+  "target_file": "converted.SRD",
+  "tasks": [
+    {
+      "task_id": 1,
+      "task_type": "confirm_file_format",
+      "status": "unresolved",
+      "resource_type": "Repository",
+      "resource_id": null,
+      "description": "ScreenRepository",
+      "target": {
+        "element": "FileFormat",
+        "current_value": "006A"
+      },
+      "reason": "006A appears in the supplied objective example but is not confirmed as universal",
+      "required_output": {
+        "action": "Either \"keep\" or \"replace\"",
+        "value": "Replacement FileFormat when action is replace",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting examples or specifications"
+      }
+    },
+    {
+      "task_id": 2,
+      "task_type": "confirm_library_name",
+      "status": "unresolved",
+      "resource_type": "ScreenLibrary",
+      "resource_id": null,
+      "description": "Library",
+      "target": {
+        "attribute": "Name",
+        "current_value": "Library"
+      },
+      "reason": "The library name is not available from TDS or IDS",
+      "required_output": {
+        "action": "Either \"keep\" or \"replace\"",
+        "value": "Replacement library name",
+        "confidence": "Number from 0.0 to 1.0"
+      }
+    },
+    {
+      "task_id": 3,
+      "task_type": "resolve_fc",
+      "status": "unresolved",
+      "resource_type": "Text",
+      "resource_id": 4,
+      "description": "ShowPlusSign",
+      "target": {
+        "element": "FC",
+        "input_index": 1
+      },
+      "reason": "The target FC attribute values cannot yet be proven from a deterministic mapping",
+      "source": {
+        "printf_format": "%+04d",
+        "language_field_sets": [
+          {
+            "language_index": "1",
+            "translated_fields": [
+              "%+04d"
+            ],
+            "untranslated_fields": []
+          },
+          {
+            "language_index": "2",
+            "translated_fields": [
+              "%+04d"
+            ],
+            "untranslated_fields": []
+          }
+        ]
+      },
+      "required_output": {
+        "Type": "Target FC type",
+        "Digits": "Target FC digits value",
+        "Value": "Target FC default value",
+        "Prefix": "Target FC prefix value",
+        "Padding": "Target FC padding value",
+        "Base": "Target FC numeric base value",
+        "Alt": "Target FC alternate-form boolean",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of source facts or known examples"
+      }
+    },
+    {
+      "task_id": 4,
+      "task_type": "resolve_fc",
+      "status": "unresolved",
+      "resource_type": "Text",
+      "resource_id": 1,
+      "description": "SupplyVoltage",
+      "target": {
+        "element": "FC",
+        "input_index": 1
+      },
+      "reason": "The target FC attribute values cannot yet be proven from a deterministic mapping",
+      "source": {
+        "printf_format": "%4d",
+        "language_field_sets": [
+          {
+            "language_index": "1",
+            "translated_fields": [
+              "%4d"
+            ],
+            "untranslated_fields": []
+          },
+          {
+            "language_index": "2",
+            "translated_fields": [
+              "%4d"
+            ],
+            "untranslated_fields": []
+          }
+        ]
+      },
+      "required_output": {
+        "Type": "Target FC type",
+        "Digits": "Target FC digits value",
+        "Value": "Target FC default value",
+        "Prefix": "Target FC prefix value",
+        "Padding": "Target FC padding value",
+        "Base": "Target FC numeric base value",
+        "Alt": "Target FC alternate-form boolean",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of source facts or known examples"
+      }
+    },
+    {
+      "task_id": 5,
+      "task_type": "resolve_fc",
+      "status": "unresolved",
+      "resource_type": "Text",
+      "resource_id": 2,
+      "description": "Hexadecimal",
+      "target": {
+        "element": "FC",
+        "input_index": 1
+      },
+      "reason": "The target FC attribute values cannot yet be proven from a deterministic mapping",
+      "source": {
+        "printf_format": "%4x",
+        "language_field_sets": [
+          {
+            "language_index": "1",
+            "translated_fields": [
+              "%4x"
+            ],
+            "untranslated_fields": []
+          },
+          {
+            "language_index": "2",
+            "translated_fields": [
+              "%4x"
+            ],
+            "untranslated_fields": []
+          }
+        ]
+      },
+      "required_output": {
+        "Type": "Target FC type",
+        "Digits": "Target FC digits value",
+        "Value": "Target FC default value",
+        "Prefix": "Target FC prefix value",
+        "Padding": "Target FC padding value",
+        "Base": "Target FC numeric base value",
+        "Alt": "Target FC alternate-form boolean",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of source facts or known examples"
+      }
+    },
+    {
+      "task_id": 6,
+      "task_type": "resolve_fc",
+      "status": "unresolved",
+      "resource_type": "Text",
+      "resource_id": 3,
+      "description": "LeadingZeros",
+      "target": {
+        "element": "FC",
+        "input_index": 1
+      },
+      "reason": "The target FC attribute values cannot yet be proven from a deterministic mapping",
+      "source": {
+        "printf_format": "%04d",
+        "language_field_sets": [
+          {
+            "language_index": "1",
+            "translated_fields": [
+              "%04d"
+            ],
+            "untranslated_fields": []
+          },
+          {
+            "language_index": "2",
+            "translated_fields": [
+              "%04d"
+            ],
+            "untranslated_fields": []
+          }
+        ]
+      },
+      "required_output": {
+        "Type": "Target FC type",
+        "Digits": "Target FC digits value",
+        "Value": "Target FC default value",
+        "Prefix": "Target FC prefix value",
+        "Padding": "Target FC padding value",
+        "Base": "Target FC numeric base value",
+        "Alt": "Target FC alternate-form boolean",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of source facts or known examples"
+      }
+    },
+    {
+      "task_id": 7,
+      "task_type": "review_image_description",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 6,
+      "description": "TORTUGA",
+      "target": {
+        "element": "Description",
+        "current_value": "TORTUGA"
+      },
+      "reason": "The objective example semantically renamed image descriptions",
+      "source": {
+        "description": "TORTUGA"
+      },
+      "required_output": {
+        "action": "Either \"keep\" or \"replace\"",
+        "value": "Replacement description when action is replace",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting facts"
+      }
+    },
+    {
+      "task_id": 8,
+      "task_type": "review_image_filename",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 6,
+      "description": "TORTUGA",
+      "target": {
+        "element": "SourceFileName",
+        "current_value": "TORTUGA.BMP"
+      },
+      "reason": "Changing the XML filename without changing the physical bitmap would break the reference",
+      "source": {
+        "filename": "TORTUGA.BMP"
+      },
+      "required_output": {
+        "action": "Either \"keep\" or \"replace\"",
+        "value": "Replacement filename when action is replace",
+        "physical_file_action": "Either \"none\", \"rename\", or \"copy\"",
+        "confidence": "Number from 0.0 to 1.0"
+      }
+    },
+    {
+      "task_id": 9,
+      "task_type": "resolve_image_format",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 6,
+      "description": "TORTUGA",
+      "target": {
+        "element": "ImageFormatName"
+      },
+      "reason": "The objective output does not use a simple one-to-one ColorDepth mapping",
+      "source": {
+        "filename": "TORTUGA.BMP",
+        "ColorDepth": "1",
+        "OutputFormat": "RLE",
+        "Palette": "<Palette> <Default>0</Default> <FromBmp>0</FromBmp> <Name /> <ViewPaletteName /> </Palette>"
+      },
+      "required_output": {
+        "ImageFormatName": "Exact target SDR string",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting facts"
+      }
+    },
+    {
+      "task_id": 10,
+      "task_type": "resolve_transparency",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 6,
+      "description": "TORTUGA",
+      "target": {
+        "element": "Transparent",
+        "current_attributes": {
+          "PaletteColor": "0",
+          "X": "0",
+          "Y": "28",
+          "LowLeft": "1"
+        }
+      },
+      "reason": "The objective example changes some transparency attributes, so direct copying is not confirmed",
+      "source": {
+        "attributes": {
+          "PaletteColor": "0",
+          "X": "0",
+          "Y": "28",
+          "LowLeft": "1"
+        }
+      },
+      "required_output": {
+        "PaletteColor": "Target PaletteColor attribute",
+        "X": "Target X coordinate",
+        "Y": "Target Y coordinate",
+        "LowLeft": "Target LowLeft attribute",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting facts"
+      }
+    },
+    {
+      "task_id": 11,
+      "task_type": "resolve_source_image_element",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 6,
+      "description": "TORTUGA",
+      "target": {
+        "element": null
+      },
+      "reason": "The source element has no confirmed direct SDR translation",
+      "source": {
+        "xml": "<Used_by><ModuleName>MAINTASK</ModuleName></Used_by>"
+      }
+    },
+    {
+      "task_id": 12,
+      "task_type": "review_image_description",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 5,
+      "description": "LIEBRE",
+      "target": {
+        "element": "Description",
+        "current_value": "LIEBRE"
+      },
+      "reason": "The objective example semantically renamed image descriptions",
+      "source": {
+        "description": "LIEBRE"
+      },
+      "required_output": {
+        "action": "Either \"keep\" or \"replace\"",
+        "value": "Replacement description when action is replace",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting facts"
+      }
+    },
+    {
+      "task_id": 13,
+      "task_type": "review_image_filename",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 5,
+      "description": "LIEBRE",
+      "target": {
+        "element": "SourceFileName",
+        "current_value": "LIEBRE.BMP"
+      },
+      "reason": "Changing the XML filename without changing the physical bitmap would break the reference",
+      "source": {
+        "filename": "LIEBRE.BMP"
+      },
+      "required_output": {
+        "action": "Either \"keep\" or \"replace\"",
+        "value": "Replacement filename when action is replace",
+        "physical_file_action": "Either \"none\", \"rename\", or \"copy\"",
+        "confidence": "Number from 0.0 to 1.0"
+      }
+    },
+    {
+      "task_id": 14,
+      "task_type": "resolve_image_format",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 5,
+      "description": "LIEBRE",
+      "target": {
+        "element": "ImageFormatName"
+      },
+      "reason": "The objective output does not use a simple one-to-one ColorDepth mapping",
+      "source": {
+        "filename": "LIEBRE.BMP",
+        "ColorDepth": "8",
+        "OutputFormat": "RLE",
+        "Palette": "<Palette> <Default>0</Default> <FromBmp>1</FromBmp> <Name>LIEBRE</Name> <ViewPaletteName /> </Palette>"
+      },
+      "required_output": {
+        "ImageFormatName": "Exact target SDR string",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting facts"
+      }
+    },
+    {
+      "task_id": 15,
+      "task_type": "resolve_transparency",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 5,
+      "description": "LIEBRE",
+      "target": {
+        "element": "Transparent",
+        "current_attributes": {
+          "PaletteColor": "0",
+          "X": "0",
+          "Y": "38",
+          "LowLeft": "1"
+        }
+      },
+      "reason": "The objective example changes some transparency attributes, so direct copying is not confirmed",
+      "source": {
+        "attributes": {
+          "PaletteColor": "0",
+          "X": "0",
+          "Y": "38",
+          "LowLeft": "1"
+        }
+      },
+      "required_output": {
+        "PaletteColor": "Target PaletteColor attribute",
+        "X": "Target X coordinate",
+        "Y": "Target Y coordinate",
+        "LowLeft": "Target LowLeft attribute",
+        "confidence": "Number from 0.0 to 1.0",
+        "evidence": "List of supporting facts"
+      }
+    },
+    {
+      "task_id": 16,
+      "task_type": "resolve_source_image_element",
+      "status": "unresolved",
+      "resource_type": "Image",
+      "resource_id": 5,
+      "description": "LIEBRE",
+      "target": {
+        "element": null
+      },
+      "reason": "The source element has no confirmed direct SDR translation",
+      "source": {
+        "xml": "<Used_by> <ModuleName>MAINTASK</ModuleName> </Used_by>"
+      }
+    },
+    {
+      "task_id": 17,
+      "task_type": "supply_screen_layout_source",
+      "status": "unresolved",
+      "resource_type": "ScreenDefRepository",
+      "resource_id": null,
+      "description": "ScreenDefRepository",
+      "target": {
+        "element": "ScreenDefRepository"
+      },
+      "reason": "TDS and IDS contain reusable resources but do not contain widget positions, sizes, fonts, GUIDs, draw order, or screen interface connections"
+    },
+    {
+      "task_id": 18,
+      "task_type": "confirm_applog_repository",
+      "status": "unresolved",
+      "resource_type": "ApplogDefRepository",
+      "resource_id": null,
+      "description": "ApplogDefRepository",
+      "target": {
+        "element": "ApplogDefRepository"
+      },
+      "reason": "The element appears in the objective SDR but has no corresponding TDS or IDS source data"
+    }
+  ],
+  "summary": {
+    "tds_text_count": 4,
+    "ids_image_count": 2,
+    "image_id_offset": 4,
+    "unresolved_task_count": 18
+  }
+}
