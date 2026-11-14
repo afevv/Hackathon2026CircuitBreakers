@@ -20,36 +20,7 @@
       "can_signal": "ICON_TORTUGA",
       "polarity": "NORMAL",
       "output": "<Image ID=\"IMG_001\" Source=\"IMAGEDATA.IDS\" File=\"TORTUGA.BMP\" />"
-    },
-    "text_T_003": {
-      "type": "text",
-      "match": "Hydraulic Temp %+04d C",
-      "can_signal": "HYDRAULIC_TEMP",
-      "polarity": "NORMAL",
-      "source": "mock_llm",
-      "output": "<FC ID=\"FC_T_003\" Source=\"TEXTDATA.TDS\" Legacy=\"Hydraulic Temp %+04d C\" Pattern=\"%1$d\" Signal=\"HYDRAULIC_TEMP\" />"
-    },
-    "image_I_002": {
-      "type": "image",
-      "match": "GAUGE_RPM.BMP",
-      "can_signal": "GAUGE_RPM",
-      "polarity": "NORMAL",
-      "source": "mock_llm",
-      "output": "<Image ID=\"IMG_I_002\" Source=\"IMAGEDATA.IDS\" File=\"GAUGE_RPM.BMP\" LockAspect=\"true\" />"
     }
   },
-  "history": [
-    {
-      "rule_id": "text_T_003",
-      "match": "Hydraulic Temp %+04d C",
-      "source": "mock_llm",
-      "learned_at": "auto"
-    },
-    {
-      "rule_id": "image_I_002",
-      "match": "GAUGE_RPM.BMP",
-      "source": "mock_llm",
-      "learned_at": "auto"
-    }
-  ]
+  "history": []
 }

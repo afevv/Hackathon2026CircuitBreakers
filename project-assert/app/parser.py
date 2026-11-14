@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import List
 from xml.etree import ElementTree as ET
 
 from app.models import LegacyImageAsset, LegacyTextEntry, UIRDocument
@@ -14,6 +14,11 @@ def _text(element: ET.Element, *paths: str) -> str:
     return ""
 
 
+def _optional_int(element: ET.Element, attribute: str, *paths: str) -> int | None:
+    value = element.get(attribute) or _text(element, *paths)
+    return int(value) if value else None
+
+
 def parse_legacy_xml(text_xml: str, image_xml: str) -> UIRDocument:
     text_root = ET.fromstring(text_xml)
     image_root = ET.fromstring(image_xml)
@@ -22,6 +27,7 @@ def parse_legacy_xml(text_xml: str, image_xml: str) -> UIRDocument:
     for node in text_root.iter():
         if node.tag != "Resource":
             continue
+        line_id = f"Line_{len(text_entries) + 1:03d}"
         entry_id = node.get("ID") or node.get("Id") or node.get("Name") or "TEXT_UNNAMED"
         description = _text(node, "Description", "Name", "Caption")
         legacy_format = _text(node, "Text", "Format", "LegacyFormat", "Value")
@@ -30,9 +36,14 @@ def parse_legacy_xml(text_xml: str, image_xml: str) -> UIRDocument:
         text_entries.append(
             LegacyTextEntry(
                 id=entry_id,
+                line_id=line_id,
                 description=description,
                 legacy_format=legacy_format,
                 source_file="TEXTDATA.TDS",
+                x=_optional_int(node, "X", "X", "PosX"),
+                y=_optional_int(node, "Y", "Y", "PosY"),
+                width=_optional_int(node, "Width", "W", "Width"),
+                height=_optional_int(node, "Height", "H", "Height"),
                 can_signal=can_signal,
                 polarity=polarity.upper(),
             )
@@ -42,12 +53,13 @@ def parse_legacy_xml(text_xml: str, image_xml: str) -> UIRDocument:
     for node in image_root.iter():
         if node.tag != "ImageResource":
             continue
+        line_id = f"Line_{len(text_entries) + len(image_entries) + 1:03d}"
         asset_id = node.get("ID") or node.get("Id") or node.get("Name") or "IMG_UNNAMED"
         file_name = _text(node, "SourceFileName", "FileName", "Name")
-        x = int(_text(node, "X", "PosX") or 0)
-        y = int(_text(node, "Y", "PosY") or 0)
-        width = int(_text(node, "W", "Width") or 0)
-        height = int(_text(node, "H", "Height") or 0)
+        x = _optional_int(node, "X", "X", "PosX")
+        y = _optional_int(node, "Y", "Y", "PosY")
+        width = _optional_int(node, "Width", "W", "Width")
+        height = _optional_int(node, "Height", "H", "Height")
         color_depth = int(_text(node, "ColorDepth") or 1)
         output_format = _text(node, "OutputFormat", "Format") or "RLE"
         can_signal = _text(node, "CAN", "CANSignal", "Signal", "SignalName") or None
@@ -55,6 +67,7 @@ def parse_legacy_xml(text_xml: str, image_xml: str) -> UIRDocument:
         image_entries.append(
             LegacyImageAsset(
                 id=asset_id,
+                line_id=line_id,
                 source_file="IMAGEDATA.IDS",
                 file_name=file_name,
                 x=x,

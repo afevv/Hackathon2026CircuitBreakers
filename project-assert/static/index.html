@@ -25,7 +25,7 @@
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .title-wrap h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
     .sub { color: var(--muted); }
-    .controls, .stats, .tabs, .panels { display: grid; gap: 16px; }
+    .controls, .stats, .panels { display: grid; gap: 16px; }
     .controls { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 20px; }
     button, select { border: 1px solid var(--edge); background: var(--panel-alt); color: var(--text); border-radius: 10px; padding: 12px 16px; cursor: pointer; }
     button.primary { background: linear-gradient(135deg, #1f6fff, #3aa0ff); }
@@ -34,7 +34,7 @@
     .panel {
       background: rgba(18,27,43,0.95); border: 1px solid var(--edge); border-radius: 16px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.2);
     }
-    .stats { grid-template-columns: repeat(4, minmax(140px, 1fr)); margin-bottom: 20px; }
+    .stats { grid-template-columns: minmax(140px, 1fr); margin-bottom: 20px; }
     .metric { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 14px; }
     .metric .label { font-size: 12px; color: var(--muted); text-transform: uppercase; }
     .metric .value { font-size: 28px; font-weight: 700; margin-top: 8px; }
@@ -58,7 +58,7 @@
     .ratio-controls { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 10px; align-items: end; margin: 12px 0; }
     .ratio-controls label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; }
     .ratio-help { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 13px; }
-    .tabs { grid-template-columns: repeat(3, 1fr); margin-top: 18px; }
+    .tabs { margin-top: 18px; }
     .tab-button { background: var(--panel); }
     .tab-button.active { border-color: var(--blue); }
     .tab-panel { display: none; }
@@ -76,7 +76,7 @@
       .io-grid, .main-grid { grid-template-columns: 1fr; }
       .image-preview-controls { grid-template-columns: 1fr; }
       .ratio-controls { grid-template-columns: 1fr 1fr; }
-      .stats { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+      .stats { grid-template-columns: minmax(130px, 1fr); }
     }
   </style>
 </head>
@@ -85,9 +85,9 @@
     <div class="header">
       <div class="title-wrap">
         <div class="sub">Project A.S.S.E.R.T.</div>
-        <h1>Automated Safety Scoring & Engineered Rule Translation</h1>
+        <h1>Automated Safety Validation & Engineered Rule Translation</h1>
       </div>
-      <div class="pill" id="tierPill">Ready</div>
+      <div class="pill" id="validationPill">Not run</div>
     </div>
 
     <div class="controls">
@@ -105,26 +105,20 @@
       </label>
     </div>
 
+    <div class="panel" style="margin-bottom:20px;">
+      <label for="screenImageUpload">Coordinate-less legacy screen image (sent only to local Ollama Vision)
+        <input id="screenImageUpload" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" />
+      </label>
+      <label for="assetUploads">Legacy bitmap assets to upscale (optional)
+        <input id="assetUploads" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" multiple />
+      </label>
+      <p class="sub">Ollama Vision model: set OLLAMA_VISION_MODEL (default: llava). Screen captures and uploaded bitmap assets are sent only to your local Ollama instance.</p>
+    </div>
+
     <div class="stats">
       <div class="metric">
-        <div class="label">Trust score</div>
-        <div class="value" id="scoreValue">--</div>
-        <div class="bar"><span id="scoreBar" style="width:0%"></span></div>
-      </div>
-      <div class="metric">
-        <div class="label">Syntax Health</div>
-        <div class="value" id="syntaxValue">--</div>
-        <div class="bar"><span id="syntaxBar" style="width:0%"></span></div>
-      </div>
-      <div class="metric">
-        <div class="label">Machine Safety</div>
-        <div class="value" id="safetyValue">--</div>
-        <div class="bar"><span id="safetyBar" style="width:0%"></span></div>
-      </div>
-      <div class="metric">
-        <div class="label">Layout Precision</div>
-        <div class="value" id="layoutValue">--</div>
-        <div class="bar"><span id="layoutBar" style="width:0%"></span></div>
+        <div class="label">Boolean validation</div>
+        <div class="value" id="validationValue">Not run</div>
       </div>
     </div>
 
@@ -183,11 +177,18 @@
     <div class="tabs panel" style="margin-top:18px;">
       <div style="display:flex; gap:8px; margin-bottom:12px;">
         <button class="tab-button active" data-tab="xmlTab">Generated SRD XML</button>
+        <button class="tab-button" data-tab="auditTab">Line-Flag Audit</button>
         <button class="tab-button" data-tab="dictTab">Dynamic Dictionary</button>
         <button class="tab-button" data-tab="roiTab">Business ROI</button>
       </div>
       <div class="tab-panel active" id="xmlTab">
+        <button id="downloadSrd" type="button">Download SCREENREPO.SRD</button>
         <pre id="xmlOutput"></pre>
+      </div>
+      <div class="tab-panel" id="auditTab">
+        <button id="downloadAudit" type="button">Download Line-Flag Audit</button>
+        <div id="upscaledAssets" class="resource-list"></div>
+        <pre id="auditOutput"></pre>
       </div>
       <div class="tab-panel" id="dictTab">
         <pre id="dictionaryOutput"></pre>
@@ -215,16 +216,10 @@
   <script>
     const traceList = document.getElementById('traceList');
     const xmlOutput = document.getElementById('xmlOutput');
+    const auditOutput = document.getElementById('auditOutput');
     const dictionaryOutput = document.getElementById('dictionaryOutput');
-    const scoreValue = document.getElementById('scoreValue');
-    const syntaxValue = document.getElementById('syntaxValue');
-    const safetyValue = document.getElementById('safetyValue');
-    const layoutValue = document.getElementById('layoutValue');
-    const scoreBar = document.getElementById('scoreBar');
-    const syntaxBar = document.getElementById('syntaxBar');
-    const safetyBar = document.getElementById('safetyBar');
-    const layoutBar = document.getElementById('layoutBar');
-    const tierPill = document.getElementById('tierPill');
+    const validationValue = document.getElementById('validationValue');
+    const validationPill = document.getElementById('validationPill');
     const inputResources = document.getElementById('inputResources');
     const outputResources = document.getElementById('outputResources');
     const imageResourceSelect = document.getElementById('imageResourceSelect');
@@ -234,6 +229,9 @@
     const aspectRatioHeight = document.getElementById('aspectRatioHeight');
     const applyAspectRatio = document.getElementById('applyAspectRatio');
     const resetAspectRatio = document.getElementById('resetAspectRatio');
+    const screenImageUpload = document.getElementById('screenImageUpload');
+    const assetUploads = document.getElementById('assetUploads');
+    const upscaledAssets = document.getElementById('upscaledAssets');
     let activeBitmap = null;
     let activeBitmapUrl = null;
     let activeBitmapName = '';
@@ -265,17 +263,52 @@
       return data;
     }
 
-    function setMetric(value, node, barNode) {
-      node.textContent = `${value}%`;
-      barNode.style.width = `${Math.max(0, Math.min(100, value))}%`;
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+        reader.onerror = () => reject(new Error(`Could not read ${file.name}.`));
+        reader.readAsDataURL(file);
+      });
     }
 
-    function updateTier(tier) {
-      tierPill.textContent = tier;
-      tierPill.className = 'pill';
-      if (tier === 'Green') tierPill.classList.add('green');
-      if (tier === 'Amber') tierPill.classList.add('warn');
-      if (tier === 'Red') tierPill.classList.add('red');
+    async function filesToBase64(files) {
+      const entries = await Promise.all(Array.from(files).map(async file => [file.name, await fileToBase64(file)]));
+      return Object.fromEntries(entries);
+    }
+
+    function downloadText(filename, content) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function downloadBase64(filename, content) {
+      const bytes = Uint8Array.from(atob(content), character => character.charCodeAt(0));
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([bytes], { type: 'image/png' }));
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function renderUpscaledAssets(assets) {
+      upscaledAssets.replaceChildren();
+      Object.entries(assets || {}).forEach(([filename, content]) => {
+        const button = document.createElement('button');
+        button.textContent = `Download ${filename}`;
+        button.addEventListener('click', () => downloadBase64(filename, content));
+        upscaledAssets.appendChild(button);
+      });
+    }
+
+    function updateValidation(isValid) {
+      validationValue.textContent = isValid === null ? 'Not run' : String(isValid);
+      validationPill.textContent = isValid === null ? 'Not run' : isValid ? 'Valid' : 'Invalid';
+      validationPill.className = 'pill';
+      if (isValid === false) validationPill.classList.add('red');
     }
 
     function renderLegacyCanvas() {
@@ -373,13 +406,17 @@
         const title = document.createElement('h4');
         title.textContent = `${kind} · ${entry.id}`;
         card.appendChild(title);
+        addDetail(card, 'Legacy line ID', entry.line_id, true);
         addDetail(card, 'Source', entry.source_file, true);
         if (kind === 'Text') {
           addDetail(card, 'Legacy format', entry.legacy_format);
           addDetail(card, 'Description', entry.description);
+          if (entry.x != null) {
+            addDetail(card, 'Inferred position / size', `${entry.x}, ${entry.y} · ${entry.width} × ${entry.height} px`);
+          }
         } else {
           addDetail(card, 'Bitmap', entry.file_name);
-          addDetail(card, 'Legacy position / size', `${entry.x}, ${entry.y} · ${entry.width} × ${entry.height} px`);
+          addDetail(card, 'Legacy position / size', `${entry.x ?? '—'}, ${entry.y ?? '—'} · ${entry.width ?? '—'} × ${entry.height ?? '—'} px`);
         }
         addDetail(card, 'CAN signal', entry.can_signal);
         addDetail(card, 'Polarity', entry.polarity);
@@ -400,6 +437,7 @@
         }
         if (outputNode) {
           addDetail(resultCard, 'Provenance', outputNode.getAttribute('Provenance'), true);
+          addDetail(resultCard, 'Line flag', outputNode.getAttribute('LineFlag'), true);
           if (outputNode.tagName === 'FC') {
             addDetail(resultCard, 'Output format', outputNode.querySelector('Format')?.textContent || outputNode.getAttribute('Legacy'));
             addDetail(resultCard, 'Mapped signal', outputNode.getAttribute('Signal'));
@@ -535,33 +573,48 @@
     }
 
     async function runDemo(scenario='demo', aspectRatioOverrides=activeAspectOverrides) {
-      const llmMode = llmToggle.checked;
-      persistLLMState(llmMode);
-      const result = await callApi('/api/migrate', 'POST', {
-        scenario,
-        use_local_ollama: llmMode,
-        aspect_ratio_overrides: aspectRatioOverrides
-      });
-      if (result && result.score !== undefined) {
-        setMetric(result.score, scoreValue, scoreBar);
-        setMetric(result.score, syntaxValue, syntaxBar);
-        setMetric(result.score, safetyValue, safetyBar);
-        setMetric(result.score, layoutValue, layoutBar);
-        renderTrace(result.logs || []);
-        xmlOutput.textContent = result.srd_xml || '';
-        renderInputOutput(result);
-        updateTier(result.tier || 'Ready');
+      try {
+        const llmMode = llmToggle.checked;
+        persistLLMState(llmMode);
+        const screenImage = screenImageUpload.files[0];
+        const uploadedAssets = await filesToBase64(assetUploads.files);
+        const result = await callApi('/api/migrate', 'POST', {
+          scenario,
+          use_local_ollama: llmMode,
+          aspect_ratio_overrides: aspectRatioOverrides,
+          screen_image_base64: screenImage ? await fileToBase64(screenImage) : null,
+          asset_images: uploadedAssets
+        });
+        if (result && typeof result.validation === 'boolean') {
+          updateValidation(result.validation);
+          renderTrace(result.logs || []);
+          xmlOutput.textContent = result.srd_xml || '';
+          auditOutput.textContent = result.line_flag_audit_report || 'No audit report was returned.';
+          renderUpscaledAssets(result.upscaled_assets);
+          renderInputOutput(result);
+        }
+        await refreshDictionary();
+      } catch (error) {
+        updateValidation(null);
+        renderTrace([`Migration stopped: ${error.message}`]);
       }
-      await refreshDictionary();
     }
 
+    document.getElementById('downloadSrd').addEventListener('click', () => {
+      if (currentMigration?.srd_xml) downloadText('SCREENREPO.SRD', currentMigration.srd_xml);
+    });
+    document.getElementById('downloadAudit').addEventListener('click', () => {
+      if (currentMigration?.line_flag_audit_report) {
+        downloadText('line-flag-audit.json', currentMigration.line_flag_audit_report);
+      }
+    });
     document.getElementById('runDemo').addEventListener('click', () => runDemo('demo'));
     document.getElementById('runHazard').addEventListener('click', () => runDemo('hazard'));
     document.getElementById('resetDict').addEventListener('click', async () => {
       await callApi('/api/reset-dictionary', 'POST', {});
       await refreshDictionary();
       renderTrace(['Dictionary reset to initial state.']);
-      updateTier('Ready');
+      updateValidation(null);
     });
 
     document.querySelectorAll('.tab-button').forEach((button) => {

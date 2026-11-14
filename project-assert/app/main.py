@@ -104,9 +104,13 @@ async def migrate(payload: MigrationRequest | None = None) -> dict[str, Any]:
             scenario=scenario,
             use_local_ollama=payload.use_local_ollama,
             aspect_ratio_overrides=ratio_overrides,
+            screen_image_base64=payload.screen_image_base64,
+            asset_images=payload.asset_images,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     response = result.model_dump()
     response["input_document"] = document.model_dump()
     return response
