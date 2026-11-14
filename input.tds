@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<TextDataSource DefLang="1" OrgLang="1">
+  <FileFormat>002A</FileFormat>
+  <Folder Name="Main">
+    <Folder Name="AnotherFolder">
+      <Text>
+        <ID>4</ID>
+        <Description>ShowPlusSign</Description>
+        <Used_by/>
+        <String LanguageIndex="1" CodePage="1252" TextData="ShowPlusSign %+04d V"/>
+        <String LanguageIndex="2" CodePage="1252" TextData="ShowPlusSign %+04d V"/>
+      </Text>
+    </Folder>
+    <Text>
+      <ID>1</ID>
+      <Description>SupplyVoltage</Description>
+      <Used_by/>
+      <String LanguageIndex="1" CodePage="1252" TextData="Supply Voltage %4d V"/>
+      <String LanguageIndex="2" CodePage="1252" TextData="Forsyningsspænding %4d V"/>
+    </Text>
+    <Text>
+      <ID>2</ID>
+      <Description>Hexadecimal</Description>
+      <Used_by/>
+      <String LanguageIndex="1" CodePage="1252" TextData="Hexadecimal %4x"/>
+      <String LanguageIndex="2" CodePage="1252" TextData="Hexadecimal %4x"/>
+    </Text>
+    <Text>
+      <ID>3</ID>
+      <Description>LeadingZeros</Description>
+      <Used_by/>
+      <String LanguageIndex="1" CodePage="1252" TextData="Leading Zeros %04d V"/>
+      <String LanguageIndex="2" CodePage="1252" TextData="Leading Zeros %04d V"/>
+    </Text>
+  </Folder>
+  <Language>
+    <Name>English</Name>
+    <Index>1</Index>
+    <Hidden>0</Hidden>
+    <DefaultCodePage>1252</DefaultCodePage>
+  </Language>
+  <Language>
+    <Name>Danish</Name>
+    <Index>2</Index>
+    <Hidden>0</Hidden>
+    <DefaultCodePage>1252</DefaultCodePage>
+  </Language>
+</TextDataSource>
